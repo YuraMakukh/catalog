@@ -58,3 +58,24 @@ function categories_to_template($category){
     include 'category_template.php';
     return ob_get_clean();
 }
+
+/**
+ * Хлебные крошки
+ * @param $array
+ * @param $id
+ * @return array|bool
+ */
+function breadcrumbs($array, $id){
+    if(!$id) return false;
+
+    $count = count($array);
+    $breadcrumbs_array = array();
+    for($i = 0; $i < $count; $i++){
+        if($array[$id]){
+            $breadcrumbs_array[$array[$id]['id']] = $array[$id]['title'];
+            $id = $array[$id]['parent'];
+        }else break;
+    }
+    return array_reverse($breadcrumbs_array, true);
+}
+

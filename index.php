@@ -1,10 +1,7 @@
 <?php
-include 'config.php';
-include 'functions.php';
 
-$categories = get_cat();
-$categories_tree = map_tree($categories);
-$categories_menu = categories_to_string($categories_tree);
+include 'catalog.php';
+
 ?>
 
 <!doctype html>
@@ -26,7 +23,11 @@ $categories_menu = categories_to_string($categories_tree);
             </ul>
         </div>
         <div class="content">
+            <hr><br>
+            <p><?=$breadcrumbs;?></p><br>
+            <hr>
             CONTENT
+            <?php d($categories);?>
         </div>
     </div>
     <script src="js/jquery-1.9.0.min.js"></script>

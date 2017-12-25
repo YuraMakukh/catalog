@@ -103,12 +103,12 @@ function cats_id($array, $id){
  * @param $ids
  * @return array
  */
-function get_products($ids = false){
+function get_products($ids, $start_pos, $per_page){
     global $connection;
     if ($ids){
-        $query ="SELECT * FROM products WHERE parent IN($ids) ORDER BY title";
+        $query ="SELECT * FROM products WHERE parent IN($ids) ORDER BY title LIMIT {$start_pos}, {$per_page}";
     }else{
-        $query = "SELECT * FROM products ORDER BY title";
+        $query = "SELECT * FROM products ORDER BY title LIMIT {$start_pos}, {$per_page}";
     }
     $res = mysqli_query($connection, $query);
     $products = [];
@@ -117,3 +117,26 @@ function get_products($ids = false){
     }
     return $products;
 }
+
+/**
+ * общиее количество товаров для определенной категории
+ * @param $ids
+ * @return int
+ */
+function count_goods($ids){
+    global $connection;
+    if (!$ids){
+        $query = "SELECT COUNT(*) FROM products";
+    }else{
+        $query = "SELECT COUNT(*) FROM products WHERE parent IN ($ids)";
+    }
+    $res = mysqli_query($connection, $query);
+    $count_goods = mysqli_fetch_row($res);
+    return $count_goods[0];
+}
+
+
+function pagination($page, $count_pages){
+    return "Pagination for APP";
+}
+

@@ -137,6 +137,47 @@ function count_goods($ids){
 
 
 function pagination($page, $count_pages){
-    return "Pagination for APP";
+    //<< < 3 4 5 6 7 > >>
+    //$back - ссылка НАЗАД
+    //$forward - ссылка ВПЕРЕД
+    //$start_page - ссылка В НАЧАЛО
+    //$end_page - ссылка В КОНЕЦ
+    //$page2left - вторая страница слева
+    //$page1left - первая страница слева
+    //$page2right - вторая страница справа
+    //$page1right - первая страница справа
+
+    $uri = '?';
+    if ($_SERVER['QUERY_STRING']){
+        foreach ($_GET as $key => $value){
+            if ($key != 'page') $uri .= "{$key}=$value" . "&";
+        }
+    }
+
+    if($page > 1){
+        $back = "<a class='nav_link' href='{$uri}page=" . ($page - 1) . "'>&lt;</a>";
+    }
+    if($page < $count_pages){
+        $forward = "<a class='nav_link' href='{$uri}page=" . ($page + 1) . "'>&gt;</a>";
+    }
+    if($page > 3) {
+        $start_page = "<a class='nav_link' href='{$uri}page=1'>&laquo;</a>";
+    }
+    if($page < ($count_pages - 2)) {
+        $end_page = "<a class='nav_link' href='{$uri}page=" . ($count_pages) . "'>&raquo;</a>";
+    }
+    if($page - 2 > 0) {
+        $page2left = "<a class='nav_link' href='{$uri}page=" . ($page - 2) . "'>" . ($page - 2) . "</a>";
+    }
+    if($page - 1 > 0) {
+        $page1left = "<a class='nav_link' href='{$uri}page=" . ($page - 1) . "'>" . ($page - 1) . "</a>";
+    }
+    if($page + 1 <= $count_pages) {
+        $page1right = "<a class='nav_link' href='{$uri}page=" . ($page + 1) . "'>" . ($page + 1) . "</a>";
+    }
+    if($page + 2 <= $count_pages) {
+        $page2right = "<a class='nav_link' href='{$uri}page=" . ($page + 2) . "'>" . ($page + 2) . "</a>";
+    }
+    return $start_page . $back . $page2left . $page1left . "<a class='nav_activ'>" . $page . '</a>' . $page1right . $page2right . $forward . $end_page;
 }
 

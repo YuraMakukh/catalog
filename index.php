@@ -23,11 +23,15 @@ include 'catalog.php';
             </ul>
         </div>
         <div class="content">
-            <hr><br>
             <p><?=$breadcrumbs;?></p><br>
-            <hr>
-            CONTENT
-            <?php d($categories);?>
+            <hr><br>
+            <?php if ($products):?>
+                <?php foreach ($products as $product):?>
+                    <a href="?product=<?=$product['id']?>"><?=$product['title']?></a><br>
+                <?php endforeach;?>
+            <?php else :?>
+                <p>Здесь товаров нет</p>
+            <?php endif;?>
         </div>
     </div>
     <script src="js/jquery-1.9.0.min.js"></script>

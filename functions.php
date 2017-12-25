@@ -79,3 +79,41 @@ function breadcrumbs($array, $id){
     return array_reverse($breadcrumbs_array, true);
 }
 
+/**
+ * ID Дочерних категорий
+ * @param $array
+ * @param $id
+ * @return bool|string
+ */
+function cats_id($array, $id){
+    if (!$id) return false;
+
+    foreach ($array as $item){
+        if ($item['parent'] == $id){
+            $data .= $item['id'] . ",";
+            $data .= cats_id($array, $item['id']);
+        }
+
+    }
+    return $data;
+}
+
+/**
+ * Получение списка товаров
+ * @param $ids
+ * @return array
+ */
+function get_products($ids = false){
+    global $connection;
+    if ($ids){
+        $query ="SELECT * FROM products WHERE parent IN($ids) ORDER BY title";
+    }else{
+        $query = "SELECT * FROM products ORDER BY title";
+    }
+    $res = mysqli_query($connection, $query);
+    $products = [];
+    while ($row = mysqli_fetch_assoc($res)){
+        $products[] = $row;
+    }
+    return $products;
+}

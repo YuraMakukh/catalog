@@ -1,0 +1,19 @@
+*{margin: 0; padding: 0;}
+.wrapper{
+	width: 980px;
+	margin: 10px;
+}
+.sidebar{
+	float: left;
+	width: 300px;
+}
+.content{
+	float: left;
+	width: 680px;
+}
+ul{
+	list-style: none;
+}
+.category ul{
+	padding-left: 20px;
+}

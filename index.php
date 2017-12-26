@@ -25,6 +25,14 @@ include 'catalog.php';
         <div class="content">
             <p><?=$breadcrumbs;?></p><br>
             <hr>
+            <div>
+                <select name="perpage" id="perpage">
+                    <?php foreach ($option_perpage as $option) :?>
+                        <option <?php if ($per_page == $option) echo "selected";?> value="<?=$option;?>"><?=$option;?> товаров на страницу</option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+
             <?php if ($products):?>
 
                 <?php if ($count_pages > 1):?>
@@ -50,6 +58,11 @@ include 'catalog.php';
     <script>
         $(document).ready(function () {
             $(".category").dcAccordion()
+            $("#perpage").change(function(){
+                var perPage = this.value;
+                $.cookie('per_page', perPage, {expires:7});
+                window.location = location.href;
+            });
         });
     </script>
 </body>

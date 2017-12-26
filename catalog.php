@@ -43,7 +43,7 @@ if( isset($_GET['product']) ){
     /*==========Pagination==========*/
 
     //количество товаров на страницу
-    $per_page = 5;
+    $per_page = (int)$_COOKIE['per_page'] ? $_COOKIE['per_page'] : PERPAGE;
 
     //общие количество товаров
     $count_goods = count_goods($ids);

@@ -1,6 +1,6 @@
 *{margin: 0; padding: 0;}
 .wrapper{
-	width: 980px;
+	width: 1200px;
 	margin: 10px;
 }
 .sidebar{
@@ -9,7 +9,7 @@
 }
 .content{
 	float: left;
-	width: 680px;
+	width: 900px;
 }
 ul{
 	list-style: none;

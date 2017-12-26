@@ -119,6 +119,18 @@ function get_products($ids, $start_pos, $per_page){
 }
 
 /**
+ * @param $id
+ * @return array|null
+ */
+function get_one_product($id){
+    global $connection;
+    $query = "SELECT * FROM products WHERE id = $id LIMIT 1";
+    $res = mysqli_query($connection, $query);
+    $product = mysqli_fetch_assoc($res);
+    return $product;
+}
+
+/**
  * общиее количество товаров для определенной категории
  * @param $ids
  * @return int

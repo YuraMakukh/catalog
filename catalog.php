@@ -23,7 +23,7 @@ if( isset($_GET['product']) ){
     if ($breadcrumbs_array){
         $breadcrumbs = "<a href=". PATH . "?>Главная</a> / ";
         foreach ($breadcrumbs_array as $id => $title){
-            $breadcrumbs .= "<a href='" . PATH . "?category={$id}'>{$title}</a> / ";
+            $breadcrumbs .= "<a href='" . PATH . "category/{$id}'>{$title}</a> / ";
         }
         if (!$get_one_product){
             $breadcrumbs = rtrim($breadcrumbs, " / ");

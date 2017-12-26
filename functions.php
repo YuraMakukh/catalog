@@ -122,9 +122,10 @@ function get_products($ids, $start_pos, $per_page){
  * @param $id
  * @return array|null
  */
-function get_one_product($id){
+function get_one_product($alias){
     global $connection;
-    $query = "SELECT * FROM products WHERE id = $id LIMIT 1";
+    $alias = mysqli_real_escape_string($connection, $alias);
+    $query = "SELECT * FROM products WHERE alias = '$alias' LIMIT 1";
     $res = mysqli_query($connection, $query);
     $product = mysqli_fetch_assoc($res);
     return $product;

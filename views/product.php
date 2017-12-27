@@ -1,9 +1,5 @@
-<?php
 
-include 'catalog.php';
-
-?>
-
+<?php defined('CATALOG') or die('Access denied!!!');?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,7 +8,7 @@ include 'catalog.php';
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Каталог</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/views/style.css">
 </head>
 <body>
 <a href="<?=PATH?>">Главная</a><br>
@@ -32,9 +28,9 @@ include 'catalog.php';
         <?php endif;?>
     </div>
 </div>
-<script src="<?=PATH?>js/jquery-1.9.0.min.js"></script>
-<script src="<?=PATH?>js/jquery.accordion.js"></script>
-<script src="<?=PATH?>js/jquery.cookie.js"></script>
+<script src="<?=PATH?>views/js/jquery-1.9.0.min.js"></script>
+<script src="<?=PATH?>views/js/jquery.accordion.js"></script>
+<script src="<?=PATH?>views/js/jquery.cookie.js"></script>
 <script>
     $(document).ready(function () {
         $(".category").dcAccordion()

@@ -1,6 +1,6 @@
 <?php
 
-include 'catalog.php';
+include 'category.php';
 
 $res = mysqli_query($connection, "SELECT id, title FROM products");
 while($row = mysqli_fetch_assoc($res)){

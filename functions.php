@@ -1,4 +1,6 @@
 <?php
+defined('CATALOG') or die('Access denied!!!');
+
 /**
  * Удобная расспечатка массива
  */
@@ -55,7 +57,7 @@ function categories_to_string($data){
  */
 function categories_to_template($category){
     ob_start();
-    include 'category_template.php';
+    include 'views/category_template.php';
     return ob_get_clean();
 }
 

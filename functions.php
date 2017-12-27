@@ -1,4 +1,6 @@
 <?php
+defined('CATALOG') or die('Access denied!!!');
+
 /**
  * Удобная расспечатка массива
  */
@@ -55,7 +57,7 @@ function categories_to_string($data){
  */
 function categories_to_template($category){
     ob_start();
-    include 'category_template.php';
+    include 'views/category_template.php';
     return ob_get_clean();
 }
 
@@ -122,9 +124,10 @@ function get_products($ids, $start_pos, $per_page){
  * @param $id
  * @return array|null
  */
-function get_one_product($id){
+function get_one_product($alias){
     global $connection;
-    $query = "SELECT * FROM products WHERE id = $id LIMIT 1";
+    $alias = mysqli_real_escape_string($connection, $alias);
+    $query = "SELECT * FROM products WHERE alias = '$alias' LIMIT 1";
     $res = mysqli_query($connection, $query);
     $product = mysqli_fetch_assoc($res);
     return $product;
@@ -148,7 +151,8 @@ function count_goods($ids){
 }
 
 
-function pagination($page, $count_pages){
+function pagination($page, $count_pages, $modrew = true){
+    //$modrew = true - ЧПУ
     //<< < 3 4 5 6 7 > >>
     //$back - ссылка НАЗАД
     //$forward - ссылка ВПЕРЕД
@@ -160,11 +164,25 @@ function pagination($page, $count_pages){
     //$page1right - первая страница справа
 
     $uri = '?';
-    if ($_SERVER['QUERY_STRING']){
-        foreach ($_GET as $key => $value){
-            if ($key != 'page') $uri .= "{$key}=$value" . "&";
+    if (!$modrew){
+        //если есть параметры в запросе
+        if ($_SERVER['QUERY_STRING']){
+            foreach ($_GET as $key => $value){
+                if ($key != 'page') $uri .= "{$key}=$value" . "&amp;";
+            }
+        }
+    }else{
+        $url = $_SERVER['REQUEST_URI'];
+        $url = explode("?", $url);
+        if (isset($url[1]) && $url[1] != ''){
+            $params = explode("&", $url[1]);
+            foreach ($params as $param)
+            if (!preg_match("#page=#", $param)){
+                $uri .= "{$param}&amp;";
+            }
         }
     }
+
 
     if($page > 1){
         $back = "<a class='nav_link' href='{$uri}page=" . ($page - 1) . "'>&lt;</a>";

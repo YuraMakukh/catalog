@@ -1,56 +1,108 @@
 <?php
+//error_reporting(E_ALL);
+define('CATALOG', true);
 
-include 'catalog.php';
+include 'config.php';
+include 'functions.php';
 
-?>
+$categories = get_cat();
+$categories_tree = map_tree($categories);
+$categories_menu = categories_to_string($categories_tree);
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Каталог</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<a href="<?=PATH?>">Главная</a><br>
-    <div class="wrapper">
-        <div class="sidebar">
-            <ul class="category">
-                <?php echo $categories_menu;?>
-            </ul>
-        </div>
-        <div class="content">
-            <p><?=$breadcrumbs;?></p><br>
-            <hr>
-            <?php if ($products):?>
 
-                <?php if ($count_pages > 1):?>
-                <div class="pagination"><?=$pagination?></div>
-                <?php endif;?>
+/******************Routing*****************/
 
-                <?php foreach ($products as $product):?>
-                    <a href="<?=PATH?>product.php?product=<?=$product['id']?>"><?=$product['title']?></a><br>
-                <?php endforeach;?>
+$url = ltrim($_SERVER['REQUEST_URI'], '/');
 
-                <?php if ($count_pages > 1):?>
-                    <div class="pagination"><?=$pagination?></div>
-                <?php endif;?>
+$routes = [
+    ['url' => '#^$|^\?$#', 'view' => 'category'],
 
-                <?php else :?>
-                <p>Здесь товаров нет</p>
-            <?php endif;?>
-        </div>
-    </div>
-    <script src="<?=PATH?>js/jquery-1.9.0.min.js"></script>
-    <script src="<?=PATH?>js/jquery.accordion.js"></script>
-    <script src="<?=PATH?>js/jquery.cookie.js"></script>
-    <script>
-        $(document).ready(function () {
-            $(".category").dcAccordion()
-        });
-    </script>
-</body>
-</html>
+    ['url' => '#^product/(?P<product_alias>[a-z0-9-]+)#i', 'view' => 'product'],
+    ['url' => '#^category/(?P<id>[0-9-]+)#i', 'view' => 'category'],
+];
+
+foreach ($routes as $rout){
+    if (preg_match($rout['url'], $url, $match)){
+        $view = $rout['view'];
+        break;
+    }
+}
+
+if (empty($match)){
+    include 'views/404.php';
+    exit;
+}
+extract($match);
+// $id - ID категории
+// $product_alias - alias продукта
+//// $view - вид для подключения
+/******************Routing*****************/
+
+if( isset($product_alias) ){
+    // массив данных продукта
+    $get_one_product = get_one_product($product_alias);
+    // получаем ID категории
+    $id = $get_one_product['parent'];
+}else{
+    $id = (int)$_GET['category'];
+}
+
+    // хлебные крошки
+    $breadcrumbs_array = breadcrumbs($categories, $id);
+
+    if ($breadcrumbs_array){
+        $breadcrumbs = "<a href=". PATH . "?>Главная</a> / ";
+        foreach ($breadcrumbs_array as $id => $title){
+            $breadcrumbs .= "<a href='" . PATH . "category/{$id}'>{$title}</a> / ";
+        }
+        if (!$get_one_product){
+            $breadcrumbs = rtrim($breadcrumbs, " / ");
+            $breadcrumbs = preg_replace("#(.+)?<a.+>(.+)</a>$#", "$1$2", $breadcrumbs);
+        }else{
+            $breadcrumbs .= $get_one_product['title'];
+        }
+
+    }else{
+        $breadcrumbs = "<a href=". PATH . "?>Главная</a> / Каталог";
+    }
+
+    // ID дочерних категорий
+    $ids = cats_id($categories, $id);
+    $ids = !$ids ? $id : rtrim($ids, ",");
+
+    /*==========Pagination==========*/
+
+    //количество товаров на страницу
+    $per_page = (int)$_COOKIE['per_page'] ? $_COOKIE['per_page'] : PERPAGE;
+
+    //общие количество товаров
+    $count_goods = count_goods($ids);
+
+    // необходимое количество страниц
+    $count_pages = ceil($count_goods / $per_page);
+    if (!$count_pages) $count_pages = 1; //минимум одна страница
+
+    //получение запрашеваемой страницы
+    if ($_GET['page']) {
+        $page = (int)$_GET['page'];
+        if ($page < 1) $page = 1;
+
+    }else{
+        $page = 1;
+    }
+    if ($page > $count_pages) $page = $count_pages;
+
+    //начальная позиция для запроса
+    $start_pos = ($page - 1) * $per_page;
+
+    $pagination = pagination($page, $count_pages);
+
+    /*==========Pagination==========*/
+
+    // list of products
+    $products = get_products($ids, $start_pos, $per_page);
+
+    include "views/{$view}.php";
+//    include 'views/product.php';
+
+

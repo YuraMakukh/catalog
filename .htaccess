@@ -1,1 +1,10 @@
 AddDefaultCharset utf-8
+RewriteEngine on
+Options -Indexes
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* index.php
+
+#RewriteRule ^product/([a-z0-9-]+)/?$ product.php?product=$1
+#RewriteRule ^category/(\d+) category.php?category=$1 [QSA]
